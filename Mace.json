@@ -1,0 +1,16 @@
+{
+    "id": "mace",
+    "name": "Mace",
+    "display_name": "Mace",
+    "author": ["pangaea47"],
+    "description": "Adds a new deck and enhancement skins.",
+    "prefix": "mace",
+    "main_file": "main.lua",
+    "priority": 47,
+    "badge_colour": "170929",
+    "badge_text_colour": "ffffff",
+    "version": "1",
+    "dependencies": [
+        "Steamodded (>=1.0.0~BETA-0827c)"
+    ]
+}
