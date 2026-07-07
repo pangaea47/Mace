@@ -2,7 +2,7 @@ SMODS.Atlas {
     key = "macelc",
     px = 71,
     py = 95,
-    path = "playcardsmace.png",
+    path = "playingcardsmace.png",
 
 }
 
@@ -10,7 +10,7 @@ SMODS.Atlas {
     key = "macehc",
     px = 71,
     py = 95,
-    path = "playcardsmacehc.png",
+    path = "playingcardsmacehc.png",
 
 }
 
