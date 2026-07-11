@@ -20,16 +20,8 @@ SMODS.Atlas {
     key = "enhancements",
     px = 71,
     py = 95,
-    path = "enhancements.png"
+    path = "enhancementssealsmace.png"
 }
-
-SMODS.Atlas {
-    key = "seals",
-    px = 71,
-    py = 95,
-    path = "seals.png"
-}
-
 for _, suit in ipairs({ "hearts", "clubs", "diamonds", "spades" }) do
     SMODS.DeckSkin {
         key = suit .. "_mace",
@@ -54,15 +46,15 @@ end
 
 local eatlas = "mace_enhancements"
 local enhancement_to_atlas_pos = {
-    ["c_base"] = { atlas = eatlas, pos = { x = 0, y = 0 } },
-    ["m_bonus"] = { atlas = eatlas, pos = { x = 1, y = 0 } },
-    ["m_mult"] = { atlas = eatlas, pos = { x = 2, y = 0 } },
-    ["m_wild"] = { atlas = eatlas, pos = { x = 3, y = 0 } },
-    ["m_lucky"] = { atlas = eatlas, pos = { x = 4, y = 0 } },
-    ["m_glass"] = { atlas = eatlas, pos = { x = 5, y = 0 } },
-    ["m_steel"] = { atlas = eatlas, pos = { x = 6, y = 0 } },
-    ["m_stone"] = { atlas = eatlas, pos = { x = 0, y = 1 } },
-    ["m_gold"] = { atlas = eatlas, pos = { x = 1, y = 1 } },
+    ["c_base"] = { atlas = atlas, pos = { x = 0, y = 0 } },
+    ["m_bonus"] = { atlas = atlas, pos = { x = 1, y = 0 } },
+    ["m_mult"] = { atlas = atlas, pos = { x = 2, y = 0 } },
+    ["m_wild"] = { atlas = atlas, pos = { x = 3, y = 0 } },
+    ["m_glass"] = { atlas = atlas, pos = { x = 4, y = 0 } },
+    ["m_steel"] = { atlas = atlas, pos = { x = 0, y = 1 } },
+    ["m_stone"] = { atlas = atlas, pos = { x = 1, y = 1 } },
+    ["m_gold"] = { atlas = atlas, pos = { x = 2, y = 1 } },
+    ["m_lucky"] = { atlas = atlas, pos = { x = 3, y = 1 } },
 }
 G.cl_enhancements = {}
 
