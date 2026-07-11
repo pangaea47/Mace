@@ -60,7 +60,7 @@ G.cl_enhancements = {}
 
 SMODS.DrawStep({
     key = 'enhancement_sprite',
-    order = 1,
+    order = 21,
     func = function(card, layer)
         if not Mace.is_using_skin(card) then
             card.children.center.states.visible = true
@@ -80,8 +80,7 @@ SMODS.DrawStep({
             G.cl_enhancements[key]:draw_shader('dissolve', nil, nil, nil, card.children.center)
             if card.edition then
                 local edition = G.P_CENTERS[card.edition.key]
-                G.cl_enhancements[key]:draw_shader(edition.shader, nil, nil, nil, card.children.center, scale_mod,
-                    rotate_mod)
+                G.cl_enhancements[key]:draw_shader(edition.shader, nil, nil, nil, card.children.center)
             end
         end
     end,
@@ -99,7 +98,7 @@ G.cl_seals = {}
 
 SMODS.DrawStep({
     key = 'seal_sprite',
-    order = 1,
+    order = 21,
     func = function(card, layer)
         if not Mace.is_using_skin(card) then return end
 
@@ -112,11 +111,6 @@ SMODS.DrawStep({
         end
         G.cl_seals[seal].role.draw_major = card
         G.cl_seals[seal]:draw_shader('dissolve', nil, nil, nil, card.children.center)
-        if card.edition then
-            local edition = G.P_CENTERS[card.edition.key]
-            G.cl_seals[seal]:draw_shader(edition.shader, nil, nil, nil, card.children.center, scale_mod,
-                rotate_mod)
-        end
         if seal == 'Gold' then
             G.cl_seals[seal]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil,
                 card.children.center)
