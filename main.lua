@@ -23,6 +23,13 @@ SMODS.Atlas {
     path = "enhancements.png"
 }
 
+SMODS.Atlas {
+    key = "seals",
+    px = 71,
+    py = 95,
+    path = "seals.png"
+}
+
 for _, suit in ipairs({ "hearts", "clubs", "diamonds", "spades" }) do
     SMODS.DeckSkin {
         key = suit .. "_mace",
@@ -37,18 +44,25 @@ for _, suit in ipairs({ "hearts", "clubs", "diamonds", "spades" }) do
     }
 end
 
+Mace = Mace or {}
+function Mace.is_using_skin(card, suit)
+    if not card or not card.config or not card.config.card or not card.config.card.suit then return false end
+    local deckskin_id = mod_prefix
+    if suit then deckskin_id = deckskin_id .. "_" .. suit .. "_mace" end -- Not sure if this will be useful, but i thought it might
+    return G.SETTINGS.CUSTOM_DECK.Collabs[card.config.card.suit]:sub(1, #(deckskin_id)) == deckskin_id
+end
 
-local atlas = "mace_enhancements"
+local eatlas = "mace_enhancements"
 local enhancement_to_atlas_pos = {
-    ["c_base"] = { atlas = atlas, pos = { x = 0, y = 0 } },
-    ["m_bonus"] = { atlas = atlas, pos = { x = 1, y = 0 } },
-    ["m_mult"] = { atlas = atlas, pos = { x = 2, y = 0 } },
-    ["m_wild"] = { atlas = atlas, pos = { x = 3, y = 0 } },
-    ["m_lucky"] = { atlas = atlas, pos = { x = 4, y = 0 } },
-    ["m_glass"] = { atlas = atlas, pos = { x = 5, y = 0 } },
-    ["m_steel"] = { atlas = atlas, pos = { x = 6, y = 0 } },
-    ["m_stone"] = { atlas = atlas, pos = { x = 0, y = 1 } },
-    ["m_gold"] = { atlas = atlas, pos = { x = 1, y = 1 } },
+    ["c_base"] = { atlas = eatlas, pos = { x = 0, y = 0 } },
+    ["m_bonus"] = { atlas = eatlas, pos = { x = 1, y = 0 } },
+    ["m_mult"] = { atlas = eatlas, pos = { x = 2, y = 0 } },
+    ["m_wild"] = { atlas = eatlas, pos = { x = 3, y = 0 } },
+    ["m_lucky"] = { atlas = eatlas, pos = { x = 4, y = 0 } },
+    ["m_glass"] = { atlas = eatlas, pos = { x = 5, y = 0 } },
+    ["m_steel"] = { atlas = eatlas, pos = { x = 6, y = 0 } },
+    ["m_stone"] = { atlas = eatlas, pos = { x = 0, y = 1 } },
+    ["m_gold"] = { atlas = eatlas, pos = { x = 1, y = 1 } },
 }
 G.cl_enhancements = {}
 
@@ -56,12 +70,13 @@ SMODS.DrawStep({
     key = 'enhancement_sprite',
     order = 1,
     func = function(card, layer)
-        if not is_using_skin(card) then return end
+        if not Mace.is_using_skin(card) then return end
 
         local key = card.config.center.key
         if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
         if not G.cl_enhancements[key] then
             local data = enhancement_to_atlas_pos[key]
+            if not data then return print("Mace: No image provided for enhancement: " .. key) end
             G.cl_enhancements[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
         end
         if key ~= 'c_base' then
@@ -77,12 +92,43 @@ SMODS.DrawStep({
     conditions = { vortex = false, facing = 'front' },
 })
 
-function is_using_skin(card, suit)
-    if not card or not card.config or not card.config.card or not card.config.card.suit then return false end
-    local deckskin_id = mod_prefix
-    if suit then deckskin_id = deckskin_id .. "_" .. suit .. "_mace" end -- Not sure if this will be useful, but i thought it might
-    return G.SETTINGS.CUSTOM_DECK.Collabs[card.config.card.suit]:sub(1, #(deckskin_id)) == deckskin_id
-end
+local satlas = "mace_seals"
+local seal_to_atlas_pos = {
+    ["Red"] = { atlas = satlas, pos = { x = 2, y = 0 } },
+    ["Blue"] = { atlas = satlas, pos = { x = 3, y = 0 } },
+    ["Gold"] = { atlas = satlas, pos = { x = 0, y = 0 } },
+    ["Purple"] = { atlas = satlas, pos = { x = 1, y = 0 } },
+}
+G.cl_seals = {}
+
+SMODS.DrawStep({
+    key = 'seal_sprite',
+    order = 1,
+    func = function(card, layer)
+        if not Mace.is_using_skin(card) then return end
+
+        local seal = card.seal
+        if not seal then return end
+        if not G.cl_seals[seal] then
+            local data = seal_to_atlas_pos[seal]
+            if not data then return print("Mace: No image provided for seal: " .. seal) end
+            G.cl_seals[seal] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
+        end
+        G.cl_seals[seal].role.draw_major = card
+        G.cl_seals[seal]:draw_shader('dissolve', nil, nil, nil, card.children.center)
+        if card.edition then
+            local edition = G.P_CENTERS[card.edition.key]
+            G.cl_seals[seal]:draw_shader(edition.shader, nil, nil, nil, card.children.center, scale_mod,
+                rotate_mod)
+        end
+        if seal == 'Gold' then
+            G.cl_seals[seal]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil,
+                card.children.center)
+        end
+    end,
+    conditions = { vortex = false, facing = 'front' },
+})
+
 
 -- previous attempt at enhancements made by someone else
 

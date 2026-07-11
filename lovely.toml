@@ -1,0 +1,14 @@
+
+
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 200
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/card_draw.lua"]'
+match_indent = true
+position = 'before'
+pattern = '''local seal = G.P_SEALS[self.seal] or {}'''
+payload = '''if Mace.is_using_skin(self) then return end'''
