@@ -89,10 +89,10 @@ SMODS.DrawStep({
 
 local satlas = "mace_enhancements"
 local seal_to_atlas_pos = {
-    ["Red"] = { atlas = satlas, pos = { x = 2, y = 2 } },
-    ["Blue"] = { atlas = satlas, pos = { x = 3, y = 2 } },
+    ["Red"] = { atlas = satlas, pos = { x = 1, y = 2 } },
+    ["Blue"] = { atlas = satlas, pos = { x = 2, y = 2 } },
     ["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
-    ["Purple"] = { atlas = satlas, pos = { x = 1, y = 2 } },
+    ["Purple"] = { atlas = satlas, pos = { x = 3, y = 2 } },
 }
 G.cl_seals = {}
 
