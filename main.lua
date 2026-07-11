@@ -1,3 +1,5 @@
+local mod_prefix = "mace"
+
 SMODS.Atlas {
     key = "macelc",
     px = 71,
@@ -54,6 +56,8 @@ SMODS.DrawStep({
     key = 'enhancement_sprite',
     order = 1,
     func = function(card, layer)
+        if not is_using_skin(card) then return end
+
         local key = card.config.center.key
         if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
         if not G.cl_enhancements[key] then
@@ -72,6 +76,13 @@ SMODS.DrawStep({
     end,
     conditions = { vortex = false, facing = 'front' },
 })
+
+function is_using_skin(card, suit)
+    if not card or not card.config or not card.config.card or not card.config.card.suit then return false end
+    local deckskin_id = mod_prefix
+    if suit then deckskin_id = deckskin_id .. "_" .. suit .. "_mace" end -- Not sure if this will be useful, but i thought it might
+    return G.SETTINGS.CUSTOM_DECK.Collabs[card.config.card.suit]:sub(1, #(deckskin_id)) == deckskin_id
+end
 
 -- previous attempt at enhancements made by someone else
 
