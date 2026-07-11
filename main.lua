@@ -46,15 +46,15 @@ end
 
 local eatlas = "mace_enhancements"
 local enhancement_to_atlas_pos = {
-    ["c_base"] = { atlas = atlas, pos = { x = 0, y = 0 } },
-    ["m_bonus"] = { atlas = atlas, pos = { x = 1, y = 0 } },
-    ["m_mult"] = { atlas = atlas, pos = { x = 2, y = 0 } },
-    ["m_wild"] = { atlas = atlas, pos = { x = 3, y = 0 } },
-    ["m_glass"] = { atlas = atlas, pos = { x = 4, y = 0 } },
-    ["m_steel"] = { atlas = atlas, pos = { x = 0, y = 1 } },
-    ["m_stone"] = { atlas = atlas, pos = { x = 1, y = 1 } },
-    ["m_gold"] = { atlas = atlas, pos = { x = 2, y = 1 } },
-    ["m_lucky"] = { atlas = atlas, pos = { x = 3, y = 1 } },
+    ["c_base"] = { atlas = eatlas, pos = { x = 0, y = 0 } },
+    ["m_bonus"] = { atlas = eatlas, pos = { x = 1, y = 0 } },
+    ["m_mult"] = { atlas = eatlas, pos = { x = 2, y = 0 } },
+    ["m_wild"] = { atlas = eatlas, pos = { x = 3, y = 0 } },
+    ["m_glass"] = { atlas = eatlas, pos = { x = 4, y = 0 } },
+    ["m_steel"] = { atlas = eatlas, pos = { x = 0, y = 1 } },
+    ["m_stone"] = { atlas = eatlas, pos = { x = 1, y = 1 } },
+    ["m_gold"] = { atlas = eatlas, pos = { x = 2, y = 1 } },
+    ["m_lucky"] = { atlas = eatlas, pos = { x = 3, y = 1 } },
 }
 G.cl_enhancements = {}
 
@@ -62,13 +62,17 @@ SMODS.DrawStep({
     key = 'enhancement_sprite',
     order = 1,
     func = function(card, layer)
-        if not Mace.is_using_skin(card) then return end
+        if not Mace.is_using_skin(card) then
+            card.children.center.states.visible = true
+            return
+        end
+        card.children.center.states.visible = false
 
         local key = card.config.center.key
         if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
         if not G.cl_enhancements[key] then
             local data = enhancement_to_atlas_pos[key]
-            if not data then return print("Mace: No image provided for enhancement: " .. key) end
+            if not data then return print("Mace: No pos provided for enhancement: " .. key) end
             G.cl_enhancements[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
         end
         if key ~= 'c_base' then
@@ -84,12 +88,12 @@ SMODS.DrawStep({
     conditions = { vortex = false, facing = 'front' },
 })
 
-local satlas = "mace_seals"
+local satlas = "mace_enhancements"
 local seal_to_atlas_pos = {
-    ["Red"] = { atlas = satlas, pos = { x = 2, y = 0 } },
-    ["Blue"] = { atlas = satlas, pos = { x = 3, y = 0 } },
-    ["Gold"] = { atlas = satlas, pos = { x = 0, y = 0 } },
-    ["Purple"] = { atlas = satlas, pos = { x = 1, y = 0 } },
+    ["Red"] = { atlas = satlas, pos = { x = 2, y = 2 } },
+    ["Blue"] = { atlas = satlas, pos = { x = 3, y = 2 } },
+    ["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
+    ["Purple"] = { atlas = satlas, pos = { x = 1, y = 2 } },
 }
 G.cl_seals = {}
 
@@ -103,7 +107,7 @@ SMODS.DrawStep({
         if not seal then return end
         if not G.cl_seals[seal] then
             local data = seal_to_atlas_pos[seal]
-            if not data then return print("Mace: No image provided for seal: " .. seal) end
+            if not data then return print("Mace: No pos provided for seal: " .. seal) end
             G.cl_seals[seal] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
         end
         G.cl_seals[seal].role.draw_major = card
