@@ -98,7 +98,7 @@ G.cl_seals = {}
 
 SMODS.DrawStep({
     key = 'seal_sprite',
-    order = 21,
+    order = 22,
     func = function(card, layer)
         if not Mace.is_using_skin(card) then return end
 
