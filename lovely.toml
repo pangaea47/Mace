@@ -11,4 +11,4 @@ target = '=[SMODS _ "src/card_draw.lua"]'
 match_indent = true
 position = 'before'
 pattern = '''local seal = G.P_SEALS[self.seal] or {}'''
-payload = '''if Mace.is_using_skin(self) then return end'''
+payload = '''if Mace.is_using_skin(self) and Mace.seal_to_atlas_pos[self.seal] then return end'''

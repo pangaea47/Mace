@@ -1,5 +1,6 @@
 local mod_prefix = "mace"
-
+Mace = Mace or {
+}
 SMODS.Atlas {
 	key = "macelc",
 	px = 71,
@@ -45,7 +46,7 @@ local function force_atlas_image()
 		hcatlas_table.image = mace_macehc.image
 	end
 end
-local mace_atlases = {
+Mace.mace_atlases = {
 	mace_macelc = lcatlas_table,
 	mace_macehc = hcatlas_table,
 }
@@ -64,10 +65,7 @@ for _, suit in ipairs({ "hearts", "clubs", "diamonds", "spades" }) do
 	}
 end
 
-Mace = Mace or {
-	mace_atlases = mace_atlases,
 
-}
 function Mace.is_using_skin(card, suit)
 	if not card or not card.config or not card.config.card or not card.config.card.suit then return false end
 	local deckskin_id = mod_prefix
@@ -107,6 +105,8 @@ SMODS.DrawStep({
 -- This is done for debugplus' watch functions
 function DrawStep_enhancement_sprite(card, layer)
 	force_atlas_image()
+	local key = card.config.center.key
+	if not enhancement_to_atlas_pos[key] then return end
 	if not Mace.is_using_skin(card) then
 		card.children.center.atlas = card.children.center.base_atlas or card.children.center.atlas
 		card.children.center.Mid.sprite_pos = card.children.center.base_pos or card.children.center.Mid.sprite_pos
@@ -114,15 +114,13 @@ function DrawStep_enhancement_sprite(card, layer)
 	end
 	card.children.center.base_atlas = card.children.center.base_atlas or card.children.center.atlas
 	card.children.center.base_pos = card.children.center.base_pos or card.children.center.atlas
-	card.children.center.atlas = mace_atlases[card.children.front.atlas.key]
+	card.children.center.atlas = Mace.mace_atlases[card.children.front.atlas.key]
 	card.children.center.Mid.sprite_pos = copy_table(rank_to_atlas_pos[card.config.card.suit])
 	if card.config.card.value == "Ace" then card.children.center.Mid.sprite_pos.x = 14 end
 
-	local key = card.config.center.key
 	if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
 	if not G.cl_enhancements[key] then
 		local data = enhancement_to_atlas_pos[key]
-		if not data then return print("Mace: No pos provided for enhancement: " .. key) end
 		G.cl_enhancements[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
 	end
 	if key ~= 'c_base' then
@@ -136,7 +134,7 @@ function DrawStep_enhancement_sprite(card, layer)
 end
 
 local satlas = "mace_enhancements"
-local seal_to_atlas_pos = {
+Mace.seal_to_atlas_pos = {
 	["Red"] = { atlas = satlas, pos = { x = 1, y = 2 } },
 	["Blue"] = { atlas = satlas, pos = { x = 2, y = 2 } },
 	["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
@@ -158,10 +156,9 @@ function DrawStep_seal_sprite(card, layer)
 	if not Mace.is_using_skin(card) then return end
 
 	local seal = card.seal
-	if not seal then return end
+	if not seal or not Mace.seal_to_atlas_pos[seal] then return end
 	if not G.cl_seals[seal] then
-		local data = seal_to_atlas_pos[seal]
-		if not data then return print("Mace: No pos provided for seal: " .. seal) end
+		local data = Mace.seal_to_atlas_pos[seal]
 		G.cl_seals[seal] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
 	end
 	G.cl_seals[seal].role.draw_major = card
