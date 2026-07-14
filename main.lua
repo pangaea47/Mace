@@ -81,7 +81,7 @@ local rank_to_atlas_pos = {
 }
 
 local eatlas = "mace_enhancements"
-local enhancement_to_atlas_pos = {
+Mace.enhancement_to_atlas_pos = {
 	["c_base"] = { atlas = eatlas, pos = { x = 0, y = 0 } },
 	["m_bonus"] = { atlas = eatlas, pos = { x = 1, y = 0 } },
 	["m_mult"] = { atlas = eatlas, pos = { x = 2, y = 0 } },
@@ -91,6 +91,13 @@ local enhancement_to_atlas_pos = {
 	["m_stone"] = { atlas = eatlas, pos = { x = 1, y = 1 } },
 	["m_gold"] = { atlas = eatlas, pos = { x = 2, y = 1 } },
 	["m_lucky"] = { atlas = eatlas, pos = { x = 3, y = 1 } },
+}
+local satlas = "mace_enhancements"
+Mace.seal_to_atlas_pos = {
+	["Red"] = { atlas = satlas, pos = { x = 1, y = 2 } },
+	["Blue"] = { atlas = satlas, pos = { x = 2, y = 2 } },
+	["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
+	["Purple"] = { atlas = satlas, pos = { x = 3, y = 2 } },
 }
 G.cl_enhancements = {}
 
@@ -106,7 +113,7 @@ SMODS.DrawStep({
 function DrawStep_enhancement_sprite(card, layer)
 	force_atlas_image()
 	local key = card.config.center.key
-	if not enhancement_to_atlas_pos[key] then return end
+	if not Mace.enhancement_to_atlas_pos[key] then return end
 	if not Mace.is_using_skin(card) then
 		card.children.center.atlas = card.children.center.base_atlas or card.children.center.atlas
 		card.children.center.Mid.sprite_pos = card.children.center.base_pos or card.children.center.Mid.sprite_pos
@@ -120,7 +127,7 @@ function DrawStep_enhancement_sprite(card, layer)
 
 	if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
 	if not G.cl_enhancements[key] then
-		local data = enhancement_to_atlas_pos[key]
+		local data = Mace.enhancement_to_atlas_pos[key]
 		G.cl_enhancements[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
 	end
 	if key ~= 'c_base' then
@@ -133,15 +140,7 @@ function DrawStep_enhancement_sprite(card, layer)
 	end
 end
 
-local satlas = "mace_enhancements"
-Mace.seal_to_atlas_pos = {
-	["Red"] = { atlas = satlas, pos = { x = 1, y = 2 } },
-	["Blue"] = { atlas = satlas, pos = { x = 2, y = 2 } },
-	["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
-	["Purple"] = { atlas = satlas, pos = { x = 3, y = 2 } },
-}
 G.cl_seals = {}
--- This is done for debugplus' watch functions
 
 SMODS.DrawStep({
 	key = 'seal_sprite',
