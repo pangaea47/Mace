@@ -23,12 +23,11 @@ SMODS.Atlas {
 }
 
 SMODS.Atlas {
-	key = "mfenhancements",
+	key = "image",
 	px = 71,
 	py = 95,
-	path = "mfmaceenhancements.png"
+	path = "image.png"
 }
-
 local mace_macelc = SMODS.Atlases["mace_macelc"]
 local lcatlas_table = {
 	py = mace_macelc.py,
@@ -45,6 +44,14 @@ local hcatlas_table = {
 	image = mace_macehc.image,
 }
 
+local mace_test = SMODS.Atlases["mace_image"]
+local testatlas_table = {
+	py = mace_test.py,
+	px = mace_test.px,
+	name = mace_test.name,
+	image = mace_test.image,
+}
+
 local function force_atlas_image()
 	if not lcatlas_table.image then
 		lcatlas_table.image = mace_macelc.image
@@ -52,10 +59,14 @@ local function force_atlas_image()
 	if not hcatlas_table.image then
 		hcatlas_table.image = mace_macehc.image
 	end
+	if not testatlas_table.image then
+		testatlas_table.image = mace_test.image
+	end
 end
 Mace.mace_atlases = {
 	mace_macelc = lcatlas_table,
 	mace_macehc = hcatlas_table,
+	mace_test = testatlas_table,
 }
 
 for _, suit in ipairs({ "hearts", "clubs", "diamonds", "spades" }) do
@@ -118,6 +129,19 @@ Mace.seal_to_atlas_pos = {
 }
 G.cl_enhancements = {}
 
+function allSuitsMace()
+	local suits = { "Hearts", "Diamonds", "Clubs", "Spades" }
+	for _, suit in pairs(suits) do
+		if G.SETTINGS.CUSTOM_DECK.Collabs[suit] ~= "mace_" .. string.lower(suit) .. "_mace" then
+			print(suit)
+			print(G.SETTINGS.CUSTOM_DECK.Collabs[suit])
+			print("mace_" .. string.lower(suit) .. "mace")
+			return false
+		end
+	end
+	return true
+end
+
 SMODS.DrawStep({
 	key = 'enhancement_sprite',
 	order = 21,
@@ -136,6 +160,17 @@ function DrawStep_enhancement_sprite(card, layer)
 		card.children.center.Mid.sprite_pos = card.children.center.base_pos or card.children.center.Mid.sprite_pos
 		return
 	end
+
+	if allSuitsMace() then
+		card.children.back.base_atlas = card.children.back.base_atlas or card.children.back.atlas
+		card.children.back.base_pos = card.children.back.base_pos or card.children.back.atlas
+		card.children.back.atlas = Mace.mace_atlases["mace_test"]
+		card.children.back.Mid.sprite_pos = { x = 0, y = 0 }
+	else
+		card.children.back.atlas = card.children.back.base_atlas or card.children.back.atlas
+		card.children.back.Mid.sprite_pos = card.children.back.base_pos or card.children.back.Mid.sprite_pos
+	end
+
 	card.children.center.base_atlas = card.children.center.base_atlas or card.children.center.atlas
 	card.children.center.base_pos = card.children.center.base_pos or card.children.center.atlas
 	card.children.center.atlas = Mace.mace_atlases[card.children.front.atlas.key]
