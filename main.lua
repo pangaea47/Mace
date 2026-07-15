@@ -177,7 +177,7 @@ SMODS.DrawStep({
 	key = 'enhancement_sprite_back',
 	order = 22,
 	func = function(card, layer)
-		if allSuitsMace() and G.GAME.selected_back.effect.center.key == "b_red" then
+		if allSuitsMace() and G.GAME[card.back].effect.center.key == "b_red" then
 			card.children.back.base_atlas = card.children.back.base_atlas or card.children.back.atlas
 			card.children.back.base_pos = card.children.back.base_pos or card.children.back.atlas
 			card.children.back.atlas = Mace.mace_atlases["mace_test"]
