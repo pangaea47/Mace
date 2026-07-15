@@ -22,6 +22,13 @@ SMODS.Atlas {
 	path = "enhancementssealsmace.png"
 }
 
+SMODS.Atlas {
+	key = "mfenhancements",
+	px = 71,
+	py = 95,
+	path = "mfmaceenhancements.png"
+}
+
 local mace_macelc = SMODS.Atlases["mace_macelc"]
 local lcatlas_table = {
 	py = mace_macelc.py,
@@ -81,6 +88,7 @@ local rank_to_atlas_pos = {
 }
 
 local eatlas = "mace_enhancements"
+local mfeatlas = "mace_mfenhancements"
 Mace.enhancement_to_atlas_pos = {
 	["c_base"] = { atlas = eatlas, pos = { x = 0, y = 0 } },
 	["m_bonus"] = { atlas = eatlas, pos = { x = 1, y = 0 } },
@@ -91,6 +99,15 @@ Mace.enhancement_to_atlas_pos = {
 	["m_stone"] = { atlas = eatlas, pos = { x = 1, y = 1 } },
 	["m_gold"] = { atlas = eatlas, pos = { x = 2, y = 1 } },
 	["m_lucky"] = { atlas = eatlas, pos = { x = 3, y = 1 } },
+	["m_mf_monus"] = { atlas = mfeatlas, pos = { x = 0, y = 0 } },
+	["m_mf_cult"] = { atlas = mfeatlas, pos = { x = 1, y = 0 } },
+	["m_mf_styled"] = { atlas = mfeatlas, pos = { x = 2, y = 0 } },
+	["m_mf_brass"] = { atlas = mfeatlas, pos = { x = 3, y = 0 } },
+	["m_mf_teal"] = { atlas = mfeatlas, pos = { x = 0, y = 1 } },
+	["m_mf_gemstone"] = { atlas = mfeatlas, pos = { x = 1, y = 1 } },
+	["m_mf_marigold"] = { atlas = mfeatlas, pos = { x = 2, y = 1 } },
+	["m_mf_yucky"] = { atlas = mfeatlas, pos = { x = 3, y = 1 } },
+	["m_mf_power"] = { atlas = mfeatlas, pos = { x = 0, y = 2 } },
 }
 local satlas = "mace_enhancements"
 Mace.seal_to_atlas_pos = {
