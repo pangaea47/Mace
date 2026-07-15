@@ -150,15 +150,7 @@ function DrawStep_enhancement_sprite(card, layer)
 		return
 	end
 
-	if allSuitsMace() then
-		card.children.back.base_atlas = card.children.back.base_atlas or card.children.back.atlas
-		card.children.back.base_pos = card.children.back.base_pos or card.children.back.atlas
-		card.children.back.atlas = Mace.mace_atlases["mace_test"]
-		card.children.back.Mid.sprite_pos = { x = 0, y = 0 }
-	else
-		card.children.back.atlas = card.children.back.base_atlas or card.children.back.atlas
-		card.children.back.Mid.sprite_pos = card.children.back.base_pos or card.children.back.Mid.sprite_pos
-	end
+
 
 	card.children.center.base_atlas = card.children.center.base_atlas or card.children.center.atlas
 	card.children.center.base_pos = card.children.center.base_pos or card.children.center.atlas
@@ -180,6 +172,23 @@ function DrawStep_enhancement_sprite(card, layer)
 		end
 	end
 end
+
+SMODS.DrawStep({
+	key = 'enhancement_sprite_back',
+	order = 22,
+	func = function(card, layer)
+		if allSuitsMace() and G.GAME.selected_back.effect.center.key == "b_red" then
+			card.children.back.base_atlas = card.children.back.base_atlas or card.children.back.atlas
+			card.children.back.base_pos = card.children.back.base_pos or card.children.back.atlas
+			card.children.back.atlas = Mace.mace_atlases["mace_test"]
+			card.children.back.Mid.sprite_pos = { x = 0, y = 0 }
+		else
+			card.children.back.atlas = card.children.back.base_atlas or card.children.back.atlas
+			card.children.back.Mid.sprite_pos = card.children.back.base_pos or card.children.back.Mid.sprite_pos
+		end
+	end,
+	conditions = { vortex = false, facing = 'back' },
+})
 
 G.cl_seals = {}
 
