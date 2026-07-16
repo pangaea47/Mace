@@ -36,6 +36,11 @@ SMODS.Atlas {
 	py = 95,
 	path = "image.png"
 }
+
+SMODS.Shader {
+	key = "mace_splash",
+	path = "splash.fs"
+}
 local mace_macelc = SMODS.Atlases["mace_macelc"]
 local lcatlas_table = {
 	py = mace_macelc.py,
@@ -93,18 +98,31 @@ end
 
 
 function Mace.is_using_skin(card, suit)
-	if not card or not card.config or not card.config.card or not card.config.card.suit then return false end
-	local deckskin_id = mod_prefix
-	if suit then deckskin_id = deckskin_id .. "_" .. suit .. "_mace" end -- Not sure if this will be useful, but i thought it might
-	return G.SETTINGS.CUSTOM_DECK.Collabs[card.config.card.suit]:sub(1, #(deckskin_id)) == deckskin_id
+	local card_suit = suit
+	if card and card.config and card.config.card and card.config.card.suit then
+		card_suit = card.config
+			.card.suit
+	elseif not suit then
+		return false
+	end
+	local deckskin_id = mod_prefix .. "_" .. string.lower(card_suit) .. "_mace"
+	return G.SETTINGS.CUSTOM_DECK.Collabs[card_suit] == deckskin_id
 end
 
-local rank_to_atlas_pos = {
+local suit_to_atlas_pos = {
 	["Hearts"] = { x = 13, y = 0 },
 	["Clubs"] = { x = 13, y = 1 },
 	["Diamonds"] = { x = 13, y = 2 },
 	["Spades"] = { x = 13, y = 3 },
 }
+
+function Mace.SuitToAtlas_Pos(suit, rank, temp)
+	local atlas = "mace_mace" .. G.SETTINGS.colour_palettes[suit]
+	if temp ~= "c_base" then atlas = Mace.mace_atlases[atlas] end
+	local pos = copy_table(suit_to_atlas_pos[suit])
+	if rank == "Ace" then pos.x = pos.x + 1 end
+	return atlas, pos
+end
 
 local eatlas = "mace_enhancements"
 local mfeatlas = "mace_mfenhancements"
@@ -141,41 +159,48 @@ function allSuitsMace()
 	local suits = { "Hearts", "Diamonds", "Clubs", "Spades" }
 	for _, suit in pairs(suits) do
 		if G.SETTINGS.CUSTOM_DECK.Collabs[suit] ~= "mace_" .. string.lower(suit) .. "_mace" then
-			print(suit)
-			print(G.SETTINGS.CUSTOM_DECK.Collabs[suit])
-			print("mace_" .. string.lower(suit) .. "mace")
 			return false
 		end
 	end
 	return true
 end
 
-SMODS.DrawStep({
-	key = 'enhancement_sprite',
-	order = 21,
-	func = function(card, layer)
-		DrawStep_enhancement_sprite(card, layer)
+local old_DrawStep_front = SMODS.DrawSteps.front.func
+SMODS.DrawStep:take_ownership('front', {
+	func = function(self, layer)
+		old_DrawStep_front(self, layer)
+		DrawStep_enhancement_sprite(self, layer)
 	end,
-	conditions = { vortex = false, facing = 'front' },
 })
+
+-- SMODS.DrawStep({
+-- 	key = 'enhancement_sprite',
+-- 	order = 21,
+-- 	func = function(card, layer)
+-- 		DrawStep_enhancement_sprite(card, layer)
+-- 	end,
+-- 	conditions = { vortex = false, facing = 'front' },
+-- })
 -- This is done for debugplus' watch functions
 function DrawStep_enhancement_sprite(card, layer)
 	force_atlas_image()
 	local key = card.config.center.key
 	if not Mace.enhancement_to_atlas_pos[key] then return end
-	if not Mace.is_using_skin(card) then
-		card.children.center.atlas = card.children.center.base_atlas or card.children.center.atlas
-		card.children.center.Mid.sprite_pos = card.children.center.base_pos or card.children.center.Mid.sprite_pos
-		return
-	end
+	-- if not Mace.is_using_skin(card) then
+	-- 	card.children.center.atlas = card.children.center.base_atlas or card.children.center.atlas
+	-- 	card.children.center.Mid.sprite_pos = card.children.center.base_pos or card.children.center.Mid.sprite_pos
+	-- 	card.children.center.base_atlas = card.children.center.atlas
+	-- 	card.children.center.base_pos = card.children.center.Mid.sprite_pos
+	-- 	return
+	-- end
 
 
 
-	card.children.center.base_atlas = card.children.center.base_atlas or card.children.center.atlas
-	card.children.center.base_pos = card.children.center.base_pos or card.children.center.atlas
-	card.children.center.atlas = Mace.mace_atlases[card.children.front.atlas.key]
-	card.children.center.Mid.sprite_pos = copy_table(rank_to_atlas_pos[card.config.card.suit])
-	if card.config.card.value == "Ace" then card.children.center.Mid.sprite_pos.x = 14 end
+	-- card.children.center.base_atlas = card.children.center.base_atlas or card.children.center.atlas
+	-- card.children.center.base_pos = card.children.center.base_pos or card.children.center.atlas
+	-- card.children.center.atlas = Mace.mace_atlases[card.children.front.atlas.key]
+	-- card.children.center.Mid.sprite_pos = copy_table(suit_to_atlas_pos[card.config.card.suit])
+	-- if card.config.card.value == "Ace" then card.children.center.Mid.sprite_pos.x = 14 end
 
 	if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
 	if not G.cl_enhancements[key] then
@@ -192,22 +217,24 @@ function DrawStep_enhancement_sprite(card, layer)
 	end
 end
 
-SMODS.DrawStep({
-	key = 'enhancement_sprite_back',
-	order = 22,
-	func = function(card, layer)
-		if allSuitsMace() and G.GAME[card.back].effect.center.key == "b_red" then
-			card.children.back.base_atlas = card.children.back.base_atlas or card.children.back.atlas
-			card.children.back.base_pos = card.children.back.base_pos or card.children.back.atlas
-			card.children.back.atlas = Mace.mace_atlases["mace_test"]
-			card.children.back.Mid.sprite_pos = { x = 0, y = 0 }
-		else
-			card.children.back.atlas = card.children.back.base_atlas or card.children.back.atlas
-			card.children.back.Mid.sprite_pos = card.children.back.base_pos or card.children.back.Mid.sprite_pos
-		end
-	end,
-	conditions = { vortex = false, facing = 'back' },
-})
+-- SMODS.DrawStep({
+-- 	key = 'enhancement_sprite_back',
+-- 	order = 22,
+-- 	func = function(card, layer)
+-- 		if allSuitsMace() and G.GAME[card.back].effect.center.key == "b_red" then
+-- 			card.children.back.base_atlas = card.children.back.base_atlas or card.children.back.atlas
+-- 			card.children.back.base_pos = card.children.back.base_pos or card.children.back.atlas
+-- 			card.children.back.atlas = Mace.mace_atlases["mace_test"]
+-- 			card.children.back.Mid.sprite_pos = { x = 0, y = 0 }
+-- 		else
+-- 			card.children.back.atlas = card.children.back.base_atlas or card.children.back.atlas
+-- 			card.children.back.Mid.sprite_pos = card.children.back.base_pos or card.children.back.Mid.sprite_pos
+-- 			card.children.back.base_atlas = card.children.back.atlas
+-- 			card.children.back.base_pos = card.children.back.atlas
+-- 		end
+-- 	end,
+-- 	conditions = { vortex = false, facing = 'back' },
+-- })
 
 G.cl_seals = {}
 
@@ -235,6 +262,34 @@ function DrawStep_seal_sprite(card, layer)
 		G.cl_seals[seal]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil,
 			card.children.center)
 	end
+end
+
+local bg = { { HEX("3b0b0b"), HEX("762141"), HEX("2a3638"), HEX("687f86") }, { HEX("635f4d"), HEX("e7e3a9"), HEX("393171"), HEX("98b1d9") }, {} }
+
+for key, value in ipairs(bg) do
+	print(key)
+	G.C["mace_bg_color_" .. key] = SMODS.Gradient({
+		key = "bg_color_" .. key,
+		colours = value,
+		cycle = 5,
+	})
+end
+local old_Game_main_menu = Game.main_menu
+function Game:main_menu(context)
+	local ret = old_Game_main_menu(self, context)
+	if not allSuitsMace() then return ret end
+	G.SPLASH_BACK:define_draw_steps({ {
+		shader = 'splash',
+		send = {
+			{ name = 'time',        ref_table = G.TIMERS, ref_value = 'REAL_SHADER' },
+			{ name = 'vort_speed',  val = 0.4 },
+			{ name = 'colour_1',    ref_table = G.C,      ref_value = 'mace_bg_color_1' },
+			{ name = 'colour_2',    ref_table = G.C,      ref_value = 'mace_bg_color_2' },
+			{ name = 'vort_offset', val = 0 },
+		}
+	} })
+
+	return ret
 end
 
 -- debug for quick resets im lazy
