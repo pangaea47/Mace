@@ -10,14 +10,27 @@ priority = 200
 target = '=[SMODS _ "src/overrides.lua"]'
 match_indent = true
 position = 'at'
+pattern = '''self.children.back = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h, atlas_key, self.params.bypass_back or (self.playing_card and G.GAME[self.back].pos or G.P_CENTERS['b_red'].pos))'''
+payload = '''
+local pos = self.params.bypass_back or (self.playing_card and G.GAME[self.back].pos or G.P_CENTERS['b_red'].pos)
+if Mace.allSuitsMace() and G and G.GAME and G.GAME[self.back] and G.GAME[self.back].effect.center.key == "b_red" then 
+ atlas_key = Mace.mace_atlases["mace_test"]
+ pos = {x=0,y=0}
+end
+self.children.back = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h, atlas_key, pos)'''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+position = 'at'
 pattern = '''self.children.center = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h, _center.atlas or 'centers', _center.pos)'''
 payload = '''
 local atlas = _center.atlas
 local pos = _center.pos
-if self.base and self.base.suit and Mace.is_using_skin(nil, self.base.suit) then
-    print("usingskin")
-    atlas, pos = Mace.SuitToAtlas_Pos(self.base.suit, self.base.value, self.config.center_key)
-end
+-- if self.base and self.base.suit and Mace.is_using_skin(nil, self.base.suit) and Mace.enhancement_to_atlas_pos[self.config.center_key] then
+--     atlas, pos = Mace.SuitToAtlas_Pos(self.base.suit, self.base.value, self.config.center_key)
+-- end
 self.children.center = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h, atlas or 'centers', pos)'''
 
 [[patches]]
