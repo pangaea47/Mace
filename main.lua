@@ -202,7 +202,8 @@ function DrawStep_front_sprite(card, layer)
 	end
 
 	if card.greyed then
-		G.cl_front[contrast][suit .. is_ace]:draw_shader('played', nil, card.ARGS.send_to_shader)
+		G.cl_front[contrast][suit .. is_ace]:draw_shader('played', nil, card.ARGS.send_to_shader, nil,
+			card.children.center)
 	end
 end
 
