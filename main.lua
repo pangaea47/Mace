@@ -37,11 +37,19 @@ SMODS.Atlas {
 	path = "image.png"
 }
 
+<<<<<<< HEAD
 SMODS.Shader {
 	key = "dissolve",
 	path = "dissolve.fs"
 }
 
+=======
+-- SMODS.Shader {
+--	key = "mace_splash",
+--	path = "splash.fs"
+-- }
+-- waffle pls fix
+>>>>>>> a4f1b9a924b253a805f12380cab401afc24a8127
 local mace_macelc = SMODS.Atlases["mace_macelc"]
 local lcatlas_table = {
 	py = mace_macelc.py,
