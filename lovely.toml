@@ -21,20 +21,6 @@ self.children.back = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h,
 
 [[patches]]
 [patches.pattern]
-target = '=[SMODS _ "src/overrides.lua"]'
-match_indent = true
-position = 'at'
-pattern = '''self.children.center = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h, _center.atlas or 'centers', _center.pos)'''
-payload = '''
-local atlas = _center.atlas
-local pos = _center.pos
--- if self.base and self.base.suit and Mace.is_using_skin(nil, self.base.suit) and Mace.enhancement_to_atlas_pos[self.config.center_key] then
---     atlas, pos = Mace.SuitToAtlas_Pos(self.base.suit, self.base.value, self.config.center_key)
--- end
-self.children.center = SMODS.create_sprite(self.T.x, self.T.y, self.T.w, self.T.h, atlas or 'centers', pos)'''
-
-[[patches]]
-[patches.pattern]
 target = '=[SMODS _ "src/card_draw.lua"]'
 match_indent = true
 position = 'before'
@@ -48,4 +34,4 @@ target = '=[SMODS _ "src/card_draw.lua"]'
 match_indent = true
 position = 'at'
 pattern = '''focused_ui = true, front = true, back = true, soul_parts = true, center = true, floating_sprite = true, shadow = true, use_button = true, buy_button = true, buy_and_use_button = true, debuff = true, price = true, particles = true, h_popup = true,'''
-payload = '''focused_ui = true, front = true, back = true, soul_parts = true, center = true, floating_sprite = true, shadow = true, use_button = true, buy_button = true, buy_and_use_button = true, debuff = true, price = true, particles = true, h_popup = true, enhancement_sprite = true, enhancement_sprite_back = true, seal_sprite = true,'''
+payload = '''focused_ui = true, front = true, back = true, soul_parts = true, center = true, floating_sprite = true, shadow = true, use_button = true, buy_button = true, buy_and_use_button = true, debuff = true, price = true, particles = true, h_popup = true, enhancement_sprite = true, front_sprite = true, seal_sprite = true,'''
