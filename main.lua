@@ -171,7 +171,7 @@ SMODS.DrawStep({
 	func = function(card, layer)
 		DrawStep_front_sprite(card, layer)
 	end,
-	conditions = { vortex = false, facing = 'front' },
+	conditions = { facing = 'front' },
 })
 -- This is done for debugplus' watch functions
 function DrawStep_front_sprite(card, layer)
@@ -214,7 +214,7 @@ SMODS.DrawStep({
 	func = function(card, layer)
 		DrawStep_enhancement_sprite(card, layer)
 	end,
-	conditions = { vortex = false, facing = 'front' },
+	conditions = { facing = 'front' },
 })
 -- This is done for debugplus' watch functions
 function DrawStep_enhancement_sprite(card, layer)
@@ -271,6 +271,32 @@ function DrawStep_seal_sprite(card, layer)
 			card.children.center)
 	end
 end
+
+-- G.cl_back = nil
+-- SMODS.DrawStep({
+-- 	key = 'back_sprite',
+-- 	order = 24,
+-- 	func = function(card, layer)
+-- 		DrawStep_back_sprite(card, layer)
+-- 	end,
+-- 	conditions = { vortex = false, facing = 'back' },
+-- })
+
+-- function DrawStep_back_sprite(card, layer)
+-- 	if not Mace.allSuitsMace() or not G or not G.GAME or not G.GAME[card.back] or not G.GAME[card.back].effect.center.key == "b_red" then
+-- 		card.children.back.states.visible = true
+-- 		return
+-- 	end
+-- 	card.children.back.states.visible = false
+
+-- 	if not G.cl_back then
+-- 		local atlas = Mace.mace_atlases["mace_test"]
+-- 		local pos = { x = 0, y = 0 }
+-- 		G.cl_back = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, atlas, pos)
+-- 	end
+-- 	G.cl_back.role.draw_major = card
+-- 	G.cl_back:draw_shader("dissolve", nil, nil, nil, card.children.center)
+-- end
 
 local bg = { { HEX("3b0b0b"), HEX("762141"), HEX("2a3638"), HEX("687f86") }, { HEX("635f4d"), HEX("e7e3a9"), HEX("393171"), HEX("98b1d9") }, {} }
 
