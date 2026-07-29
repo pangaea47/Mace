@@ -29,7 +29,13 @@ SMODS.Atlas {
 	path = "mfmaceenhancements.png"
 }
 
-
+SMODS.Atlas {
+	key = "maximusenhancements",
+	px = 71,
+	py = 95,
+	path = "maximusmaceenhancements.png"
+}
+ 
 SMODS.Atlas {
 	key = "image",
 	px = 71,
@@ -106,6 +112,7 @@ local suit_to_atlas_pos = {
 
 local eatlas = "mace_enhancements"
 local mfeatlas = "mace_mfenhancements"
+local mxmseatlas = "mace_maximusenhancements"
 Mace.enhancement_to_atlas_pos = {
 	["c_base"] = { atlas = eatlas, pos = { x = 0, y = 0 } },
 	["m_bonus"] = { atlas = eatlas, pos = { x = 1, y = 0 } },
@@ -125,6 +132,7 @@ Mace.enhancement_to_atlas_pos = {
 	["m_mf_marigold"] = { atlas = mfeatlas, pos = { x = 2, y = 1 } },
 	["m_mf_yucky"] = { atlas = mfeatlas, pos = { x = 3, y = 1 } },
 	["m_mf_power"] = { atlas = mfeatlas, pos = { x = 0, y = 2 } },
+	["m_mxms_footprint"] = { atlas = mxmseatlas, pos = { x = 1, y = 0 } },
 }
 local satlas = "mace_enhancements"
 Mace.seal_to_atlas_pos = {
@@ -132,6 +140,7 @@ Mace.seal_to_atlas_pos = {
 	["Blue"] = { atlas = satlas, pos = { x = 2, y = 2 } },
 	["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
 	["Purple"] = { atlas = satlas, pos = { x = 3, y = 2 } },
+	["mxms_Black"] = { atlas = mxmseatlas, pos = { x = 0, y = 0 } },
 }
 
 function Mace.allSuitsMace()
