@@ -328,3 +328,5 @@ end
 
 -- debug for quick resets im lazy
 function R() SMODS.restart_game() end
+
+SMODS.load_file("crossmod.lua")()
