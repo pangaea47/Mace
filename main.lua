@@ -35,12 +35,12 @@ SMODS.Atlas {
 	py = 95,
 	path = "maximusmaceenhancements.png"
 }
- 
+
 SMODS.Atlas {
-	key = "image",
+	key = "decks",
 	px = 71,
 	py = 95,
-	path = "image.png"
+	path = "macedecks.png"
 }
 
 SMODS.Shader {
@@ -64,12 +64,12 @@ local hcatlas_table = {
 	image = mace_macehc.image,
 }
 
-local mace_test = SMODS.Atlases["mace_image"]
-local testatlas_table = {
-	py = mace_test.py,
-	px = mace_test.px,
-	name = mace_test.name,
-	image = mace_test.image,
+local mace_decks = SMODS.Atlases["mace_decks"]
+local decks_atlas_table = {
+	py = mace_decks.py,
+	px = mace_decks.px,
+	name = mace_decks.name,
+	image = mace_decks.image,
 }
 
 local function force_atlas_image()
@@ -79,14 +79,14 @@ local function force_atlas_image()
 	if not hcatlas_table.image then
 		hcatlas_table.image = mace_macehc.image
 	end
-	if not testatlas_table.image then
-		testatlas_table.image = mace_test.image
+	if not decks_atlas_table.image then
+		decks_atlas_table.image = mace_decks.image
 	end
 end
 Mace.mace_atlases = {
 	mace_macelc = lcatlas_table,
 	mace_macehc = hcatlas_table,
-	mace_test = testatlas_table,
+	mace_decks = decks_atlas_table,
 }
 
 for _, suit in ipairs({ "hearts", "clubs", "diamonds", "spades" }) do
@@ -141,6 +141,28 @@ Mace.seal_to_atlas_pos = {
 	["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
 	["Purple"] = { atlas = satlas, pos = { x = 3, y = 2 } },
 	["mxms_Black"] = { atlas = mxmseatlas, pos = { x = 0, y = 0 } },
+}
+
+local datlas = "mace_decks"
+Mace.deck_to_atlas_pos = {
+	["b_red"] = { atlas = datlas, pos = { x = 0, y = 0 } },
+	["b_blue"] = { atlas = datlas, pos = { x = 0, y = 1 } },
+	["b_yellow"] = { atlas = datlas, pos = { x = 0, y = 2 } },
+	["b_green"] = { atlas = datlas, pos = { x = 0, y = 3 } },
+
+	["b_black"] = { atlas = datlas, pos = { x = 1, y = 0 } },
+	["b_magic"] = { atlas = datlas, pos = { x = 1, y = 1 } },
+	["b_nebula"] = { atlas = datlas, pos = { x = 1, y = 2 } },
+	["b_ghost"] = { atlas = datlas, pos = { x = 1, y = 3 } },
+
+	["b_abandoned"] = { atlas = datlas, pos = { x = 2, y = 0 } },
+	["b_checkered"] = { atlas = datlas, pos = { x = 2, y = 1 } },
+	["b_zodiac"] = { atlas = datlas, pos = { x = 2, y = 2 } },
+	["b_painted"] = { atlas = datlas, pos = { x = 2, y = 3 } },
+
+	["b_anaglyph"] = { atlas = datlas, pos = { x = 3, y = 0 } },
+	["b_plasma"] = { atlas = datlas, pos = { x = 3, y = 1 } },
+	["b_erratic"] = { atlas = datlas, pos = { x = 3, y = 2 } },
 }
 
 function Mace.allSuitsMace()
@@ -281,31 +303,35 @@ function DrawStep_seal_sprite(card, layer)
 	end
 end
 
--- G.cl_back = nil
--- SMODS.DrawStep({
--- 	key = 'back_sprite',
--- 	order = 24,
--- 	func = function(card, layer)
--- 		DrawStep_back_sprite(card, layer)
--- 	end,
--- 	conditions = { vortex = false, facing = 'back' },
--- })
+G.cl_back = {}
+SMODS.DrawStep({
+	key = 'back_sprite',
+	order = 24,
+	func = function(card, layer)
+		DrawStep_back_sprite(card, layer)
+	end,
+	conditions = { vortex = false, facing = 'back' },
+})
 
--- function DrawStep_back_sprite(card, layer)
--- 	if not Mace.allSuitsMace() or not G or not G.GAME or not G.GAME[card.back] or not G.GAME[card.back].effect.center.key == "b_red" then
--- 		card.children.back.states.visible = true
--- 		return
--- 	end
--- 	card.children.back.states.visible = false
-
--- 	if not G.cl_back then
--- 		local atlas = Mace.mace_atlases["mace_test"]
--- 		local pos = { x = 0, y = 0 }
--- 		G.cl_back = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, atlas, pos)
--- 	end
--- 	G.cl_back.role.draw_major = card
--- 	G.cl_back:draw_shader("dissolve", nil, nil, nil, card.children.center)
--- end
+function DrawStep_back_sprite(card, layer)
+	local key = card.config.center_key ~= "c_base" and card.config.center_key or
+	(G and G.GAME and G.GAME[card.back] and G.GAME[card.back].effect.center.key)
+	if not Mace.allSuitsMace() or not Mace.deck_to_atlas_pos[key] then
+		card.children.back.states.visible = true
+		return
+	end
+	card.children.back.states.visible = false
+	if not G.cl_back[key] then
+		local data = Mace.deck_to_atlas_pos[key]
+		if not data then return end
+		print(data)
+		local pos = data.pos
+		local atlas = data.atlas
+		G.cl_back[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, atlas, pos)
+	end
+	G.cl_back[key].role.draw_major = card
+	G.cl_back[key]:draw_shader("dissolve", nil, nil, nil, card.children.center)
+end
 
 local bg = { { HEX("3b0b0b"), HEX("762141"), HEX("2a3638"), HEX("687f86") }, { HEX("635f4d"), HEX("e7e3a9"), HEX("393171"), HEX("98b1d9") }, {} }
 
