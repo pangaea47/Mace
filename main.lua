@@ -146,23 +146,23 @@ Mace.seal_to_atlas_pos = {
 local datlas = "mace_decks"
 Mace.deck_to_atlas_pos = {
 	["b_red"] = { atlas = datlas, pos = { x = 0, y = 0 } },
-	["b_blue"] = { atlas = datlas, pos = { x = 0, y = 1 } },
-	["b_yellow"] = { atlas = datlas, pos = { x = 0, y = 2 } },
-	["b_green"] = { atlas = datlas, pos = { x = 0, y = 3 } },
+	["b_blue"] = { atlas = datlas, pos = { x = 1, y = 0 } },
+	["b_yellow"] = { atlas = datlas, pos = { x = 2, y = 0 } },
+	["b_green"] = { atlas = datlas, pos = { x = 3, y = 0 } },
 
-	["b_black"] = { atlas = datlas, pos = { x = 1, y = 0 } },
+	["b_black"] = { atlas = datlas, pos = { x = 0, y = 1 } },
 	["b_magic"] = { atlas = datlas, pos = { x = 1, y = 1 } },
-	["b_nebula"] = { atlas = datlas, pos = { x = 1, y = 2 } },
-	["b_ghost"] = { atlas = datlas, pos = { x = 1, y = 3 } },
+	["b_nebula"] = { atlas = datlas, pos = { x = 2, y = 1 } },
+	["b_ghost"] = { atlas = datlas, pos = { x = 3, y = 1 } },
 
-	["b_abandoned"] = { atlas = datlas, pos = { x = 2, y = 0 } },
-	["b_checkered"] = { atlas = datlas, pos = { x = 2, y = 1 } },
+	["b_abandoned"] = { atlas = datlas, pos = { x = 0, y = 2 } },
+	["b_checkered"] = { atlas = datlas, pos = { x = 1, y = 2 } },
 	["b_zodiac"] = { atlas = datlas, pos = { x = 2, y = 2 } },
-	["b_painted"] = { atlas = datlas, pos = { x = 2, y = 3 } },
+	["b_painted"] = { atlas = datlas, pos = { x = 3, y = 2 } },
 
-	["b_anaglyph"] = { atlas = datlas, pos = { x = 3, y = 0 } },
-	["b_plasma"] = { atlas = datlas, pos = { x = 3, y = 1 } },
-	["b_erratic"] = { atlas = datlas, pos = { x = 3, y = 2 } },
+	["b_anaglyph"] = { atlas = datlas, pos = { x = 0, y = 3 } },
+	["b_plasma"] = { atlas = datlas, pos = { x = 1, y = 3 } },
+	["b_erratic"] = { atlas = datlas, pos = { x = 2, y = 3 } },
 }
 
 function Mace.allSuitsMace()
