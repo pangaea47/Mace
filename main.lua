@@ -315,7 +315,7 @@ SMODS.DrawStep({
 
 function DrawStep_back_sprite(card, layer)
 	local key = card.config.center_key ~= "c_base" and card.config.center_key or
-	(G and G.GAME and G.GAME[card.back] and G.GAME[card.back].effect.center.key)
+		(G and G.GAME and G.GAME[card.back] and G.GAME[card.back].effect.center.key)
 	if not Mace.allSuitsMace() or not Mace.deck_to_atlas_pos[key] then
 		card.children.back.states.visible = true
 		return
@@ -324,7 +324,6 @@ function DrawStep_back_sprite(card, layer)
 	if not G.cl_back[key] then
 		local data = Mace.deck_to_atlas_pos[key]
 		if not data then return end
-		print(data)
 		local pos = data.pos
 		local atlas = data.atlas
 		G.cl_back[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, atlas, pos)
