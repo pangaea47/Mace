@@ -314,7 +314,7 @@ SMODS.DrawStep({
 })
 
 function DrawStep_back_sprite(card, layer)
-	local key = card.config.center_key ~= "c_base" and card.config.center_key or
+	local key = card.config.center_key:sub(1, 2) == "b_" and card.config.center_key or
 		(G and G.GAME and G.GAME[card.back] and G.GAME[card.back].effect.center.key)
 	if not Mace.allSuitsMace() or not Mace.deck_to_atlas_pos[key] then
 		card.children.back.states.visible = true
@@ -362,5 +362,11 @@ end
 
 -- debug for quick resets im lazy
 function R() SMODS.restart_game() end
+
+function flipall()
+	for _, card in ipairs(G.hand.cards) do
+		card:flip()
+	end
+end
 
 SMODS.load_file("crossmod.lua")()
