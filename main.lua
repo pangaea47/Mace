@@ -43,6 +43,13 @@ SMODS.Atlas {
 	path = "macedecks.png"
 }
 
+SMODS.Atlas {
+	key = "easter_eggs",
+	px = 71,
+	py = 95,
+	path = "easter_eggs.png"
+}
+
 SMODS.Shader {
 	key = "dissolve",
 	path = "dissolve.fs"
@@ -180,7 +187,7 @@ function Mace.SuitToAtlas_Pos(suit, rank, temp)
 	if temp ~= "c_base" then atlas = Mace.mace_atlases[atlas] end
 	local pos = copy_table(suit_to_atlas_pos[suit])
 	if rank == "Ace" then pos.x = pos.x + 1 end
-	return atlas, pos
+	return { atlas = atlas, pos = pos }
 end
 
 function Mace.is_using_skin(card, suit)
@@ -195,7 +202,41 @@ function Mace.is_using_skin(card, suit)
 	return G.SETTINGS.CUSTOM_DECK.Collabs[card_suit] == deckskin_id
 end
 
-G.cl_front = { lc = {}, hc = {} }
+Mace.Sprite_Overlays = {}
+
+function Draw_Sprite_Overlay(card, sprite, data)
+	if not card or not sprite or not data or not data.pos or not data.atlas then return end
+
+	--#region Easter Egg
+	local whitelisted_atlases = {
+		["mace_decks"] = true
+	}
+	local key_to_new_pos = {
+		-- ["lc_Spades_1"] = {x=0,y=0}, -- Low Contrast Spades Ace
+		-- ["hc_Spades_0"] = {x=0,y=0}, -- High Contrast Spades Non-Ace
+		-- ["b_yellow"] = {x=0,y=0}, -- Yellow deck
+		-- ["m_steel"] = {x=0,y=0}, -- Steel Enhancement
+
+	}
+
+	if pseudorandom("mace_easter_egg") * 100 < 10 and whitelisted_atlases[data.atlas] and key_to_new_pos[sprite] then
+		data.pos = key_to_new_pos[sprite]
+		data.atlas = "mace_easter_eggs"
+	end
+	--#endregion
+
+	if not Mace.Sprite_Overlays[sprite] then
+		Mace.Sprite_Overlays[sprite] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
+	end
+	Mace.Sprite_Overlays[sprite].role.draw_major = card
+	Mace.Sprite_Overlays[sprite]:draw_shader("dissolve", nil, nil, nil, card.children.center)
+
+	if sprite == 'Gold' then -- Gold Seal.
+		Mace.Sprite_Overlays[sprite]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil,
+			card.children.center)
+	end
+end
+
 SMODS.DrawStep({
 	key = 'front_sprite',
 	order = -1,
@@ -217,28 +258,22 @@ function DrawStep_front_sprite(card, layer)
 	local suit = card.config.card.suit
 	local contrast = G.SETTINGS.colour_palettes[suit]
 
-	local is_ace = tostring(card.config.card.value == "Ace")
-	if not G.cl_front[contrast][suit .. is_ace] then
-		local atlas, pos = Mace.SuitToAtlas_Pos(suit, card.config.card.value)
-		G.cl_front[contrast][suit .. is_ace] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, atlas, pos)
-	end
-	G.cl_front[contrast][suit .. is_ace].role.draw_major = card
-	local dissolve = "dissolve"
-	if card.edition and card.edition.key ~= "e_foil" then dissolve = "mace_dissolve" end
-	G.cl_front[contrast][suit .. is_ace]:draw_shader(dissolve, nil, nil, nil, card.children.center)
+	local is_ace = card.config.card.value == "Ace" and 1 or 0
+	local key = contrast .. "_" .. suit .. "_" .. is_ace
+
+	Draw_Sprite_Overlay(card, key, Mace.SuitToAtlas_Pos(suit, card.config.card.value))
 
 	if card.edition then
 		local edition = G.P_CENTERS[card.edition.key]
-		G.cl_front[contrast][suit .. is_ace]:draw_shader(edition.shader, nil, nil, nil, card.children.center)
+		Mace.Sprite_Overlays[key]:draw_shader(edition.shader, nil, nil, nil, card.children.center)
 	end
 
 	if card.greyed then
-		G.cl_front[contrast][suit .. is_ace]:draw_shader('played', nil, card.ARGS.send_to_shader, nil,
+		Mace.Sprite_Overlays[key]:draw_shader('played', nil, card.ARGS.send_to_shader, nil,
 			card.children.center)
 	end
 end
 
-G.cl_enhancements = {}
 SMODS.DrawStep({
 	key = 'enhancement_sprite',
 	order = 22,
@@ -258,24 +293,14 @@ function DrawStep_enhancement_sprite(card, layer)
 	local key = card.config.center.key
 	if not Mace.enhancement_to_atlas_pos[key] then return end
 
-	if key == 'c_base' or card.config.center.set ~= "Enhanced" then return end
-	if not G.cl_enhancements[key] then
-		local data = Mace.enhancement_to_atlas_pos[key]
-		G.cl_enhancements[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
-	end
-	if key ~= 'c_base' then
-		G.cl_enhancements[key].role.draw_major = card
-		local dissolve = "dissolve"
-		if card.edition and card.edition.key ~= "e_foil" then dissolve = "mace_dissolve" end
-		G.cl_enhancements[key]:draw_shader(dissolve, nil, nil, nil, card.children.center)
-		if card.edition then
-			local edition = G.P_CENTERS[card.edition.key]
-			G.cl_enhancements[key]:draw_shader(edition.shader, nil, nil, nil, card.children.center)
-		end
+	if card.config.center.set ~= "Enhanced" then return end
+	Draw_Sprite_Overlay(card, key, Mace.enhancement_to_atlas_pos[key])
+
+	if card.edition then
+		local edition = G.P_CENTERS[card.edition.key]
+		Mace.Sprite_Overlays[key]:draw_shader(edition.shader, nil, nil, nil, card.children.center)
 	end
 end
-
-G.cl_seals = {}
 
 SMODS.DrawStep({
 	key = 'seal_sprite',
@@ -291,19 +316,10 @@ function DrawStep_seal_sprite(card, layer)
 
 	local seal = card.seal
 	if not seal or not Mace.seal_to_atlas_pos[seal] then return end
-	if not G.cl_seals[seal] then
-		local data = Mace.seal_to_atlas_pos[seal]
-		G.cl_seals[seal] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
-	end
-	G.cl_seals[seal].role.draw_major = card
-	G.cl_seals[seal]:draw_shader("dissolve", nil, nil, nil, card.children.center)
-	if seal == 'Gold' then
-		G.cl_seals[seal]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil,
-			card.children.center)
-	end
+
+	Draw_Sprite_Overlay(card, seal, Mace.seal_to_atlas_pos[seal])
 end
 
-G.cl_back = {}
 SMODS.DrawStep({
 	key = 'back_sprite',
 	order = 24,
@@ -321,15 +337,8 @@ function DrawStep_back_sprite(card, layer)
 		return
 	end
 	card.children.back.states.visible = false
-	if not G.cl_back[key] then
-		local data = Mace.deck_to_atlas_pos[key]
-		if not data then return end
-		local pos = data.pos
-		local atlas = data.atlas
-		G.cl_back[key] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, atlas, pos)
-	end
-	G.cl_back[key].role.draw_major = card
-	G.cl_back[key]:draw_shader("dissolve", nil, nil, nil, card.children.center)
+
+	Draw_Sprite_Overlay(card, key, Mace.deck_to_atlas_pos[key])
 end
 
 local bg = { { HEX("3b0b0b"), HEX("762141"), HEX("2a3638"), HEX("687f86") }, { HEX("635f4d"), HEX("e7e3a9"), HEX("393171"), HEX("98b1d9") }, {} }
