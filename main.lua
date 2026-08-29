@@ -43,12 +43,12 @@ SMODS.Atlas {
 	path = "macedecks.png"
 }
 
-SMODS.Atlas {
-	key = "easter_eggs",
-	px = 71,
-	py = 95,
-	path = "easter_eggs.png"
-}
+-- SMODS.Atlas {
+-- 	key = "easter_eggs",
+-- 	px = 71,
+-- 	py = 95,
+-- 	path = "easter_eggs.png"
+-- }
 
 SMODS.Shader {
 	key = "dissolve",
@@ -207,23 +207,23 @@ Mace.Sprite_Overlays = {}
 function Draw_Sprite_Overlay(card, sprite, data)
 	if not card or not sprite or not data or not data.pos or not data.atlas then return end
 
-	--#region Easter Egg
-	local whitelisted_atlases = {
-		["mace_decks"] = true
-	}
-	local key_to_new_pos = {
-		-- ["lc_Spades_1"] = {x=0,y=0}, -- Low Contrast Spades Ace
-		-- ["hc_Spades_0"] = {x=0,y=0}, -- High Contrast Spades Non-Ace
-		-- ["b_yellow"] = {x=0,y=0}, -- Yellow deck
-		-- ["m_steel"] = {x=0,y=0}, -- Steel Enhancement
+	-- --#region Easter Egg
+	-- local whitelisted_atlases = {
+	-- 	["mace_decks"] = true
+	-- }
+	-- local key_to_new_pos = {
+	-- 	-- ["lc_Spades_1"] = {x=0,y=0}, -- Low Contrast Spades Ace
+	-- 	-- ["hc_Spades_0"] = {x=0,y=0}, -- High Contrast Spades Non-Ace
+	-- 	-- ["b_yellow"] = {x=0,y=0}, -- Yellow deck
+	-- 	-- ["m_steel"] = {x=0,y=0}, -- Steel Enhancement
 
-	}
+	-- }
 
-	if pseudorandom("mace_easter_egg") * 100 < 10 and whitelisted_atlases[data.atlas] and key_to_new_pos[sprite] then
-		data.pos = key_to_new_pos[sprite]
-		data.atlas = "mace_easter_eggs"
-	end
-	--#endregion
+	-- if pseudorandom("mace_easter_egg") * 100 < 10 and whitelisted_atlases[data.atlas] and key_to_new_pos[sprite] then
+	-- 	data.pos = key_to_new_pos[sprite]
+	-- 	data.atlas = "mace_easter_eggs"
+	-- end
+	-- --#endregion
 
 	if not Mace.Sprite_Overlays[sprite] then
 		Mace.Sprite_Overlays[sprite] = SMODS.create_sprite(0, 0, G.CARD_W, G.CARD_H, data.atlas, data.pos)
