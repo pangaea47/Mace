@@ -147,7 +147,7 @@ Mace.seal_to_atlas_pos = {
 	["Blue"] = { atlas = satlas, pos = { x = 2, y = 2 } },
 	["Gold"] = { atlas = satlas, pos = { x = 0, y = 2 } },
 	["Purple"] = { atlas = satlas, pos = { x = 3, y = 2 } },
-	["mxms_Black"] = { atlas = mxmseatlas, pos = { x = 0, y = 0 } },
+	["mxms_black"] = { atlas = mxmseatlas, pos = { x = 0, y = 0 } },
 }
 
 local datlas = "mace_decks"
@@ -206,7 +206,6 @@ Mace.Sprite_Overlays = {}
 
 function Draw_Sprite_Overlay(card, sprite, data)
 	if not card or not sprite or not data or not data.pos or not data.atlas then return end
-
 	-- --#region Easter Egg
 	-- local whitelisted_atlases = {
 	-- 	["mace_decks"] = true
